@@ -20,10 +20,10 @@ namespace Atividade0705.Controllers
         {
             var loginPadrao = _context.Usuarios.Where(u => u.Email.Equals(dadosLogin.Email) && u.Senha.Equals(dadosLogin.Senha)).ToList();
   
-            if (loginPadrao == dadosLogin)
+            if (loginPadrao.Count ==0)
                 return Unauthorized("Email ou Senha Incorretas");
-            HttpContext.Session.SetString("email", dadosLogin.Email);
-            Response.Cookies.Append("emailUsado", dadosLogin.Email,
+            HttpContext.Session.SetString("Email", dadosLogin.Email);
+            Response.Cookies.Append("IdUsado", loginPadrao[0].Id.ToString(),
                 new CookieOptions
                 {
                     Expires = DateTime.Now.AddMinutes(30),
@@ -36,7 +36,7 @@ namespace Atividade0705.Controllers
         [HttpGet("inicio")]
         public IActionResult Inicio()
         {
-            var usuario = HttpContext.Session.GetString("UsuarioLogado");
+            var usuario = HttpContext.Session.GetString("Email");
             if (usuario == null)
                 return Unauthorized("Não autenticado");
             return Ok("Usuário autenticado");

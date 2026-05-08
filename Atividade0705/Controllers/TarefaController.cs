@@ -18,6 +18,16 @@ namespace Atividade0705.Controllers
         [HttpPost("criar")]
         public IActionResult CriarPessoas(Tarefa tarefa)
         {
+            var usuario = HttpContext.Session.GetString("Email");
+            if (usuario == null)
+                return Unauthorized("Não autenticado");
+
+            var sessao = Request.Cookies["IdUsado"];
+            if (sessao != null)
+            {
+                tarefa.IdUsuario = int.Parse(sessao);
+            }
+
             _context.Add(tarefa);
             _context.SaveChanges();
             return Created("Teste", tarefa);
