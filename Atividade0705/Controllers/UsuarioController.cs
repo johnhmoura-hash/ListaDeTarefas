@@ -70,7 +70,7 @@ namespace Atividade0705.Controllers
             usuarioDoBanco.Email = usuario.Email;
             usuarioDoBanco.Nome = usuario.Nome;
             usuarioDoBanco.Senha = usuario.Senha;
-
+            _context.SaveChanges();
             return Ok("Atualizado com sucesso!!");
         }
         [HttpGet("nome/{nome}")]

@@ -32,7 +32,34 @@ namespace Atividade0705.Controllers
             _context.SaveChanges();
             return Created("Teste", tarefa);
         }
+        [HttpGet("{id}")]
+        public IActionResult RetornaReserva(int id)
+        {
+            var tarefa = _context.Tarefas.Find(id);
+            if (tarefa == null)
+            {
+                return NotFound("Reserva não encontrada");
+            }
+            return Ok(tarefa);
+        }
 
+        [HttpGet("TarefasCliente/{identCliente}")]
+        public IActionResult ReservasCliente(int identCliente)
+        {
+            var resultado = from u in _context.Usuarios
+                            join t in _context.Tarefas
+                            on u.Id equals t.IdUsuario
+                            where identCliente == u.Id
+                            select new
+                            {
+                                Usuarios = u.Nome,
+                                u.Email,
+                                Tarefas = t.Descricao,
+                                t.Statuss
+                               
+                            };
+            return Ok(resultado.ToList());
+        }
         [HttpPut("atualizar/{id}")]
         public IActionResult Atualizar(int id, Tarefa tarefa)
         {
@@ -43,7 +70,7 @@ namespace Atividade0705.Controllers
 
             tarefaDoBanco.Descricao = tarefa.Descricao;
             tarefaDoBanco.Statuss = tarefa.Statuss;
-
+            _context.SaveChanges();
             return Ok("Atualizado com sucesso!!");
         }
         [HttpGet("status/{nome}")]
