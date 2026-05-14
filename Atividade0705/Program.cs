@@ -20,8 +20,20 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddDbContext<UsuarioContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("PermitirTudo", policy =>
+    {
+        policy.AllowAnyOrigin()  // Permite qualquer origem
+              .AllowAnyHeader()  // Permite qualquer cabeçalho
+              .AllowAnyMethod(); // Permite qualquer método (GET, POST, etc.)
+    });
+});
 
 var app = builder.Build();
+
+// 2. Habilitar o Middleware CORS (deve ser antes de UseAuthorization)
+app.UseCors("PermitirTudo");
 
 
 app.UseSession();

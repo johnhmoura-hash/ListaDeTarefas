@@ -46,6 +46,7 @@ namespace Atividade0705.Controllers
         [HttpGet("TarefasCliente/{identCliente}")]
         public IActionResult ReservasCliente(int identCliente)
         {
+            
             var resultado = from u in _context.Usuarios
                             join t in _context.Tarefas
                             on u.Id equals t.IdUsuario
