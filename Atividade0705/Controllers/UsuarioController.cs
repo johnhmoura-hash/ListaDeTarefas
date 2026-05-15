@@ -18,7 +18,7 @@ namespace Atividade0705.Controllers
         [HttpPost("login")]
         public IActionResult Login(Usuario dadosLogin)
         {
-            var loginPadrao = _context.Usuarios.Where(u => u.Email.Equals(dadosLogin.Email) && u.Senha.Equals(dadosLogin.Senha)).ToList();
+           var loginPadrao = _context.Usuarios.Where(u => u.Email.Equals(dadosLogin.Email) && u.Senha.Equals(dadosLogin.Senha)).ToList();
   
             if (loginPadrao.Count ==0)
                 return Unauthorized("Email ou Senha Incorretas");
@@ -26,9 +26,9 @@ namespace Atividade0705.Controllers
             Response.Cookies.Append("IdUsado", loginPadrao[0].Id.ToString(),
                 new CookieOptions
                 {
-                    Expires = DateTime.Now.AddMinutes(30),
+                    HttpOnly = true,
                     Secure = true,
-                    HttpOnly = true
+                    SameSite = SameSiteMode.None
                 });
             return Ok("Login realizado com sucesso!");
         }
