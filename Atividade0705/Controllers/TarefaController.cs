@@ -32,35 +32,37 @@ namespace Atividade0705.Controllers
             _context.SaveChanges();
             return Created("Teste", tarefa);
         }
-        [HttpGet("{id}")]
-        public IActionResult RetornaReserva(int id)
+       
+        
+
+        [HttpGet]
+        public IActionResult ReservasCliente()
         {
-            var tarefa = _context.Tarefas.Find(id);
-            if (tarefa == null)
-            {
-                return NotFound("Reserva não encontrada");
+            var usuario = HttpContext.Session.GetString("Email");
+            if (usuario == null)
+                return Unauthorized("Não autenticado");
+
+            var idUsuarioLogado = Request.Cookies["IdUsado"];
+                if (idUsuarioLogado != null) {
+                var resultado = from u in _context.Usuarios
+                                join t in _context.Tarefas
+                                on u.Id equals t.IdUsuario
+                                where u.Id == int.Parse(usuario)
+                                select new
+                                {
+                                    Usuarios = u.Nome,
+                                    u.Email,
+                                    Tarefas = t.Descricao,
+                                    t.Statuss
+
+                                };
+                return Ok(resultado.ToList());
             }
-            return Ok(tarefa);
+            return Unauthorized("Não autenticado");
+
         }
 
-        [HttpGet("TarefasCliente/{identCliente}")]
-        public IActionResult ReservasCliente(int identCliente)
-        {
-            
-            var resultado = from u in _context.Usuarios
-                            join t in _context.Tarefas
-                            on u.Id equals t.IdUsuario
-                            where identCliente == u.Id
-                            select new
-                            {
-                                Usuarios = u.Nome,
-                                u.Email,
-                                Tarefas = t.Descricao,
-                                t.Statuss
-                               
-                            };
-            return Ok(resultado.ToList());
-        }
+
         [HttpPut("atualizar/{id}")]
         public IActionResult Atualizar(int id, Tarefa tarefa)
         {
@@ -74,14 +76,7 @@ namespace Atividade0705.Controllers
             _context.SaveChanges();
             return Ok("Atualizado com sucesso!!");
         }
-        [HttpGet("status/{nome}")]
-        public IActionResult ConsultaTarefaStatus(string nome)
-        {
-            var tarefaDoBanco = _context.Tarefas.Where(t => t.Statuss.Contains(nome)).ToList();
-            if (!tarefaDoBanco.Any())
-                return NotFound("Tarefa não encontrado");
-            return Ok(tarefaDoBanco);
-        }
+
 
         [HttpDelete("{id}")]
         public IActionResult Deletar(int id)
