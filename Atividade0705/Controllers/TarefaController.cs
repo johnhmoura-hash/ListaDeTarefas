@@ -47,13 +47,13 @@ namespace Atividade0705.Controllers
                 var resultado = from u in _context.Usuarios
                                 join t in _context.Tarefas
                                 on u.Id equals t.IdUsuario
-                                where u.Id == int.Parse(usuario)
+                                where u.Id == int.Parse(idUsuarioLogado)
                                 select new
                                 {
                                     Usuarios = u.Nome,
                                     u.Email,
                                     Tarefas = t.Descricao,
-                                    t.Statuss
+                                    t.Statuss,t.Id
 
                                 };
                 return Ok(resultado.ToList());
